@@ -12,8 +12,10 @@
             Console.WriteLine(account1.Balance);
             account1.MakeWithdrawal(100, DateTime.UtcNow, ":(");
             Console.WriteLine(account1.Balance);
-
+             
             try
+
+
             {
                 account2.MakeWithdrawal(1000, DateTime.UtcNow, ":(");
                 Console.WriteLine(account2.Balance);
