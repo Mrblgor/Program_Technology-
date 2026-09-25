@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using System.Text;
 
 namespace Bank;
 
@@ -49,5 +50,18 @@ internal class Bank_Account
         }
         var withdrawal = new Transaction(-amount, date, note); 
         _alltransactions.Add(withdrawal);
+    }
+    public string GetAccountHistory()
+    {
+        var report = new StringBuilder();
+
+        decimal balance = 0;
+        report.AppendLine("Data\t\tAmount\tBalance\tNote");
+        foreach(var item in  _alltransactions)
+        {
+            balance += item.Amount;
+            report.AppendLine($"" + $"{item.Date.ToShortDateString()}" + $"{item.Amount}\t{balance}\t{item.Note}");
+        }
+        return report.ToString();
     }
 }

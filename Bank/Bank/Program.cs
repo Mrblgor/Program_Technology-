@@ -12,6 +12,7 @@
             Console.WriteLine(account1.Balance);
             account1.MakeWithdrawal(100, DateTime.UtcNow, ":(");
             Console.WriteLine(account1.Balance);
+            Console.WriteLine(account1.GetAccountHistory());
              
             try
 
