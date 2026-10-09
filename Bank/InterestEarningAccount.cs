@@ -5,21 +5,29 @@ using System.Xml.Linq;
 
 namespace Bank;
 
+/// <summary>
+/// Сберегательный счёт с начислением процентов на остаток.
+/// </summary>
 public class InterestEarningAccount : BankAccount
 {
-	public InterestEarningAccount(string name, decimal initialBalance)
-		 : base(name, initialBalance)
-	{ }
+    /// <summary>
+    /// Создаёт сберегательный счёт.
+    /// </summary>
+    /// <param name="name">Имя владельца счёта.</param>
+    /// <param name="initialBalance">Начальный баланс счёта.</param>
+    public InterestEarningAccount(string name, decimal initialBalance)
+         : base(name, initialBalance)
+    { }
 
-	// override позволяет в дочернем классе определить новую реализацию
-	// метода PerformMonthAndTransactions
-	public override void PerformMonthAndTransactions()
-	{
-		if (Balance > 500m)
-		{
-			decimal interest = Balance * 0.02m;
-			MakeDeposit(interest, DateTime.UtcNow, "Apply month interest");
-		}
-
-	}
+    /// <summary>
+    /// Начисляет месячные проценты на остаток, превышающий порог.
+    /// </summary>
+    public override void PerformMonthAndTransactions()
+    {
+        if (Balance > 500m)
+        {
+            decimal interest = Balance * 0.02m;
+            MakeDeposit(interest, DateTime.UtcNow, "Apply month interest");
+        }
+    }
 }

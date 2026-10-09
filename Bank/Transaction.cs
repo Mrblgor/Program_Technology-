@@ -1,17 +1,9 @@
 ﻿namespace Bank;
 
-// record - Состояние объектов этого класса нельзя изменить
+/// <summary>
+/// Неизменяемая запись об одной банковской операции.
+/// </summary>
+/// <param name="Amount">Сумма операции: положительная — пополнение, отрицательная — списание.</param>
+/// <param name="Date">Дата и время совершения операции.</param>
+/// <param name="Note">Текстовый комментарий к операции.</param>
 public record Transaction(decimal Amount, DateTime Date, string Note);
-
-//internal record Transaction
-//{
-//    public decimal Amount { get; }
-//    public DateTime Date { get; }
-//    public string Note { get; }
-//    public Transaction(decimal Amount, DateTime Date, string Note)
-//    {
-//        this.Amount = Amount;
-//        this.Note = Note;
-//        this.Date = Date;
-//    }
-//}
