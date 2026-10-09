@@ -40,12 +40,18 @@ public class BankAccount
     private List<Transaction> _allTransactions = new List<Transaction>();
 
     /// <summary>
+    /// Статус клиента, определяющий условия обслуживания счёта.
+    /// </summary>
+    public ClientStatus Status { get; private set; } 
+
+    /// <summary>
     /// Создаёт счёт с нулевым минимальным балансом.
     /// </summary>
     /// <param name="name">Имя владельца счёта.</param>
     /// <param name="initialBalance">Начальный баланс счёта.</param>
-    public BankAccount(string name, decimal initialBalance) : this(name, initialBalance, 0)
+    public BankAccount(string name, decimal initialBalance, ClientStatus status= ClientStatus.Regular) : this(name, initialBalance, 0, status)
     {
+       
     }
 
     /// <summary>
@@ -54,8 +60,9 @@ public class BankAccount
     /// <param name="name">Имя владельца счёта.</param>
     /// <param name="initialBalance">Начальный баланс счёта.</param>
     /// <param name="minimumBalance">Минимально допустимый баланс (может быть отрицательным — кредитный лимит).</param>
-    public BankAccount(string name, decimal initialBalance, decimal minimumBalance)
+    public BankAccount(string name, decimal initialBalance, decimal minimumBalance, ClientStatus status = ClientStatus.Regular)
     {
+        Status = status;
         Owner = name;
         Number = s_accountNuberSeed.ToString();
         s_accountNuberSeed++;
@@ -64,6 +71,50 @@ public class BankAccount
 
         if (initialBalance > 0)
             MakeDeposit(initialBalance, DateTime.UtcNow, "Inital balance");
+    }
+
+    /// <summary>
+    /// Начисляет проценты на остаток и списывает комиссию за обслуживание
+    /// в соответствии со статусом клиента.
+    /// </summary>
+    public virtual void PerformMonthAndTransactions()
+    {
+        decimal interest = Status switch
+        {
+            ClientStatus.Premium when Balance > 10_000m => Balance * 0.01m,
+            ClientStatus.Vip when Balance > 10_000m => Balance * 0.03m,
+            _ => 0m
+        };
+
+        if (interest > 0m)
+            MakeDeposit(interest, DateTime.UtcNow, "Apply month interest");
+
+        decimal fee = Status switch
+        {
+            ClientStatus.Regular => 50m,
+            _ => 0m
+        };
+
+        if (fee > 0m && Balance >= fee)
+            MakeWithdrawal(fee, DateTime.UtcNow, "Monthly service fee");
+
+        if (Status == ClientStatus.Vip)
+        {
+            decimal cashback = CalculateCashback();
+            if (cashback > 0m)
+                MakeDeposit(cashback, DateTime.UtcNow, "Cashback 5%");
+        }
+    }
+
+    private decimal CalculateCashback()
+    {
+        decimal withdrawals = 0m;
+        foreach (var t in _allTransactions)
+        {
+            if (t.Amount < 0m && t.Note != "Cashback 5%")
+                withdrawals += -t.Amount;
+        }
+        return withdrawals * 0.05m;
     }
 
     /// <summary>
@@ -150,14 +201,6 @@ public class BankAccount
                 $"{item.Amount}\t{balance}\t{item.Note}");
         }
         return report.ToString();
-    }
-
-    /// <summary>
-    /// Выполняет операции, начисляемые раз в месяц.
-    /// </summary>
-    /// <remarks>Базовая реализация ничего не делает; переопределяется в наследниках.</remarks>
-    public virtual void PerformMonthAndTransactions()
-    {
     }
 
     /// <summary>

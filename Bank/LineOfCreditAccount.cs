@@ -20,4 +20,14 @@ public class LineOfCreditAccount : BankAccount
     {
 
     }
+    /// <summary>
+    /// Проверяет допустимость списания, приводящего к овердрафту,
+    /// и возвращает транзакцию с комиссией за использование кредитной линии.
+    /// </summary>
+    /// <param name="isOvesdrawn">Признак того, что баланс выйдет за допустимый минимум.</param>
+    /// <returns>Транзакция с комиссией или <c>null</c>, если овердрафт не возникает.</returns>
+    protected override Transaction? CheckWithdrawalLimit(bool isOvesdrawn)
+        => isOvesdrawn
+            ? new Transaction(-20m, DateTime.UtcNow, "Overdraft fee")
+            : default;
 }
