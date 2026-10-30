@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace BankAccounts.Core.Transactions;
 
-namespace BankAccount.Core.Transactions
-{
-    internal class Transaction
-    {
-    }
-}
+// Простой DTO (data transfer object): сумма, дата, примечание
+public sealed record Transaction(decimal Amount, DateTime Date, string Note);

@@ -2,5 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src/BankAccount.Core/BankAccount.Core.csproj" Id="bd50d7d7-2984-456c-9f13-e48f7746d5ac" />
   </Folder>
-  <Project Path="Bank/BankAccount.VisualConsole.csproj" />
+  <Project Path="Bank/BankAccount.VisualConsole.csproj">
+    <BuildDependency Project="src/BankAccount.Core/BankAccount.Core.csproj" />
+  </Project>
 </Solution>

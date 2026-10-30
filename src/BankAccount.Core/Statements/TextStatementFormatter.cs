@@ -1,12 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using BankAccounts.Core.Transactions;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace BankAccount.Core.Statements
+namespace BankAccounts.Core.Statements;
+
+public sealed class TextStatementFormatter : IStatementFormatter
 {
-    internal class TextStatementFormatter
+    public string Format(IEnumerable<Transaction> transactions)
     {
+        var report = new StringBuilder();
+
+        decimal balance = 0;
+        report.AppendLine("Data\t\tAmount\tBalance\tNote");
+        foreach (var item in transactions)
+        {
+            balance += item.Amount;
+            report.AppendLine($"" +
+                $"{item.Date.ToShortDateString()}\t" +
+                $"{item.Amount}\t{balance}\t{item.Note}");
+        }
+        return report.ToString();
     }
 }
