@@ -53,6 +53,7 @@
 
             lineOfCredit.MakeWithdrawal(600m, DateTime.UtcNow, "credit");
             Console.WriteLine(lineOfCredit.GetAccountHistory());
+            Console.WriteLine("yarusski");
         }
     }
 }
